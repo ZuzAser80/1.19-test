@@ -1,0 +1,6 @@
+{
+  "item.fbg.usp.tooltip": "Damage from a singular bullet is %d hearts",
+  "death.attack.bulletSource": "%1$s was brutally downed by %2$s",
+  "death.attack.bulletSource.item": "%1$s was brutally downed by %2$s, using %3$s",
+  "item.fbg.he_grenade": "HE Grenade"
+}

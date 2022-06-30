@@ -6,7 +6,12 @@
   "mixins": [
   ],
   "client": [
-    "ExampleMixin"
+    "ExampleMixin",
+    "client.HandRenderer",
+    "client.BipedEntityModelMixin",
+    "client.LivingEntitySwingHandMixin",
+    "client.BuiltinModelMixin",
+    "client.GameHudMixinThing"
   ],
   "injectors": {
     "defaultRequire": 1

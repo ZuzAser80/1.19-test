@@ -8,9 +8,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -22,21 +19,26 @@ public class GunItem extends Item {
     public String type;
     int totalCount = 0;
     Item bul;
-    int shootCooldown;
     int reloadCooldown;
     PlayerEntity pl;
-    int tick;
+    float offsetPerTick;
+    int animationLength;
+    float rotationOffsetPerTick;
+    boolean shoot;
+    boolean reload;
+    boolean inAttachmentMode;
 
     //TODO: Rethink the models and shit
-    //TODO: FUCKING ANIMATIONS LEARN HOW TO DO IT ALREADY U LAZY FUCK ILL SWEAR AS MUCH AS I WANT BECAUSE I FUCKING CAN! DONT FORGET TO RECORD FOR BIG BREAK FOR REAL NOW
-    public GunItem(Settings settings, Item bulletItem, int dmg, int magCap, String gunType, int c1, int c2) {
+    public GunItem(Settings settings, Item bulletItem, int dmg, int magCap, String gunType, int c2, float offsetPerTick, int animationLength, float rotationOffsetPerTick) {
         super(settings);
         bul = bulletItem;
         this.dmg = dmg;
         type = gunType;
         this.magCap = magCap;
-        shootCooldown = c1;
         reloadCooldown = c2;
+        this.offsetPerTick = offsetPerTick;
+        this.animationLength = animationLength;
+        this.rotationOffsetPerTick = rotationOffsetPerTick;
     }
 
     public Item getBulletItem() {
@@ -44,15 +46,14 @@ public class GunItem extends Item {
     }
 
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        this.tick++;
         int magCount;
         pl = (PlayerEntity) entity;
         PlayerInventory i = pl.getInventory();
         totalCount = i.count(this.bul);
         NbtCompound nbt = stack.getOrCreateNbt();
-        if (selected && MinecraftClient.getInstance().mouse.wasLeftButtonClicked() && pl.isHolding(this) && tick > shootCooldown) {
+        if (selected && MinecraftClient.getInstance().mouse.wasLeftButtonClicked() && shoot) {
             magCount = nbt.getInt("magCount");
-            if (!world.isClient && !pl.getItemCooldownManager().isCoolingDown(this)) {
+            if (!world.isClient) {
                 if (!pl.isCreative()) {
                     magCount--;
                 } else
@@ -87,33 +88,50 @@ public class GunItem extends Item {
                         dBE.setNoGravity(true);
                         world.spawnEntity(dBE);
                     }
-                    tick = 0;
                     //pl.getItemCooldownManager().set(this, shootCooldown);
                 } else if(magCount < 0)
                 {
                     magCount = 0;
                     stack.getOrCreateNbt().putInt("magCount", magCount);
                 }
-                if (i.contains(this.bul.getDefaultStack()) && !pl.getItemCooldownManager().isCoolingDown(this)) {
-                    ItemStack bulletStack = i.getStack(i.getSlotWithStack(this.bul.getDefaultStack()));
-                    if ((totalCount > 0) && stack.getNbt().getInt("magCount") == 0 && tick > reloadCooldown) {
-                        reload(bulletStack, pl, stack);
-                        tick = 0;
-                    } else
-                    {
-                        System.out.println("cannot reload, :" + tick);
-                    }
-                }
+                shoot = false;
+            }
+        } else if (selected && MinecraftClient.getInstance().mouse.wasRightButtonClicked())
+        {
+            stack.getOrCreateNbt().putString("scope", "collimator_red");
+            stack.getOrCreateNbt().putString("barrel", "silencer");
+            /*stack.getOrCreateNbt().putString("underBarrel", "laser");*/
+            //Do the aiming functional i think
+        }
+        if (i.contains(this.bul.getDefaultStack())) {
+            ItemStack bulletStack = i.getStack(i.getSlotWithStack(this.bul.getDefaultStack()));
+            if (reload) {
+                reload(bulletStack, stack);
             }
         }
+    }
+
+    public void shoot()
+    {
+        shoot = true;
+    }
+    public void reload()
+    {
+        reload = true;
+    }
+
+    public PlayerEntity getPlayer()
+    {
+        return this.pl;
     }
 
     public int getTC() {
         return this.totalCount;
     }
 
-    public void reload(ItemStack bS, PlayerEntity i, ItemStack gunStack) {
+    public void reload(ItemStack bS, ItemStack gunStack) {
         gunStack.getOrCreateNbt().putInt("magCount", Math.min(bS.getCount(), magCap));
         bS.decrement(gunStack.getNbt().getInt("magCount"));
+        reload = false;
     }
 }

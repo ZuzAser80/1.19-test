@@ -1,4 +1,6 @@
 {
   "parent": "item/generated",
-  "textures": {"layer0": "fbg:item/big_kevlar_plate"}
+  "textures": {
+    "layer0": "fbg:item/big_kevlar_plate"
+  }
 }

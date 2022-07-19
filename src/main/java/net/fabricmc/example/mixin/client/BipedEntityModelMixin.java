@@ -45,7 +45,11 @@ public abstract class BipedEntityModelMixin <T extends LivingEntity> extends Ani
             int t = 0;
             if(s.getItem() instanceof GunItem)
             {
-                this.rightArm.pivotZ = -(float)MathHelper.lerp(0.2, 0, 2);
+                if(MinecraftClient.getInstance().mouse.wasLeftButtonClicked())
+                {
+                    this.rightArm.pivotZ -= 0.5 * j;
+                    this.rightArm.pitch = -1.570796f;
+                }
                 t = 1;
 
             } else if(livingEntity.getOffHandStack().getItem() instanceof GunItem)
@@ -58,7 +62,7 @@ public abstract class BipedEntityModelMixin <T extends LivingEntity> extends Ani
             if(t == 1)
             {
                 //rightArm.yaw -= 0.79f;
-                leftArm.pitch = rightArm.pitch * 3;
+                leftArm.pitch = -0.392699f * 3;
                 leftArm.yaw += 0.79f;
                 if (isSprinting)
                 {
@@ -71,7 +75,7 @@ public abstract class BipedEntityModelMixin <T extends LivingEntity> extends Ani
                 }
             } else if(t == -1)
             {
-                rightArm.pitch = rightArm.pitch * 3;
+                rightArm.pitch = -0.392699f * 3;
                 rightArm.yaw += 0.79f;
                 if (isSprinting)
                 {

@@ -8,8 +8,11 @@ import net.fabricmc.example.armor.model.kevlar.KevlarHelmetModel;
 import net.fabricmc.example.armor.model.specnaz.SpecnazChestplateModel;
 import net.fabricmc.example.armor.model.specnaz.SpecnazHelmetModel;
 import net.fabricmc.example.entity.basic.BasicRegistry;
+import net.fabricmc.example.entity.bullet_hole.BulletHoleRegistry;
 import net.fabricmc.example.entity.explosive.GrenadeRegistry;
 import net.fabricmc.example.item.ItemRegistry;
+import net.fabricmc.example.item.model.*;
+import net.fabricmc.example.networking.KeybindRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -33,6 +36,16 @@ public class FBGClient implements ClientModInitializer {
 
         BasicRegistry.clientRegistry();
         GrenadeRegistry.clientRegistry();
+        Test01EntityModel.createLayer();
+        TestScopeEntityModel.createLayer();
+        TestSilencerEntityModel.createLayer();
+        CollimatorGreen1_2xEntity.createLayer();
+        DefaultMuzzleFlashEntityModel.createLayer();
+        KeybindRegistry.registryClient();
+        KeybindRegistry.registerUpKey();
+        KeybindRegistry.registerLeftKey();
+        BulletHoleRegistry.clientRegistry();
+        AnimationHelper.eventClient();
 
         renderArmor(ItemRegistry.KevlarChest, EquipmentSlot.CHEST, new Identifier("fbg", "textures/entity/armor/kevlar_chest_entity.png"), "chest", new Identifier("fbg", "kevlar_chest_layer"), "kevlar_chest_render_layer", KevlarChestplateModel::getTexturedModelData, false);
         renderArmor(ItemRegistry.KevlarHelm, EquipmentSlot.HEAD, new Identifier("fbg", "textures/entity/armor/kevlar_helmet_entity.png"), "head", new Identifier("fbg", "kevlar_helmet_layer"), "kevlar_helmet_render_layer", KevlarHelmetModel::getTexturedModelData, false);

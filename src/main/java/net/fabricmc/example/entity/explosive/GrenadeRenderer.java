@@ -21,9 +21,8 @@ public class GrenadeRenderer extends EntityRenderer<GrenadeEntity> {
     Identifier texture;
     HEGrenadeModel model = new HEGrenadeModel(HEGrenadeModel.getTexturedModelData().createModel());
 
-    public GrenadeRenderer(EntityRendererFactory.Context context, Identifier texture) {
+    public GrenadeRenderer(EntityRendererFactory.Context context) {
         super(context);
-        this.texture = texture;
     }
 
     @Override
@@ -41,6 +40,6 @@ public class GrenadeRenderer extends EntityRenderer<GrenadeEntity> {
 
     @Override
     public Identifier getTexture(GrenadeEntity entity) {
-        return texture;
+        return new Identifier("fbg", "textures/entity/he_grenade.png");
     }
 }

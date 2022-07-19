@@ -25,18 +25,17 @@ import net.minecraft.util.registry.Registry;
 public class GrenadeRegistry {
     public static EntityType<GrenadeEntity> GrenadeType;
 
-    @Environment(EnvType.CLIENT)
     public static void registry()
     {
         GrenadeType = registerEntityType(new Identifier("fbg", "grenade"), FabricEntityTypeBuilder.<GrenadeEntity>create(SpawnGroup.MISC,
-                (entity, world) -> new GrenadeEntity(world, ItemRegistry.HeGrenade, 5, 5, true, false, false))
+                (entity, world) -> new GrenadeEntity(world, Items.DIAMOND, net.fabricmc.example.entity.explosive.GrenadeType.SMOKE))
                 .dimensions(EntityDimensions.fixed(0.25F, 0.25F)).build());
     }
     @Environment(EnvType.CLIENT)
     public static void clientRegistry()
     {
         ClientPlayNetworking.registerGlobalReceiver(GrenadeEntitySpawnPocket.ID, GrenadeEntitySpawnPocket::onPacket);
-        EntityRendererRegistry.register(GrenadeType, (context) -> new GrenadeRenderer(context, new Identifier("fbg", "textures/entity/he_grenade.png")));
+        EntityRendererRegistry.register(GrenadeType, GrenadeRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(new EntityModelLayer(new Identifier("fbg", "he_grenade"), "main"), HEGrenadeModel::getTexturedModelData);
     }
     public static <T extends PersistentProjectileEntity> EntityType<T> registerEntityType(Identifier id, EntityType<T> entityType)

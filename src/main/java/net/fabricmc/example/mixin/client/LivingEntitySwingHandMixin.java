@@ -7,6 +7,7 @@ import net.fabricmc.example.armor.KevlarArmorMaterial;
 import net.fabricmc.example.entity.basic.BulletEntity;
 import net.fabricmc.example.item.BulletProofShieldItem;
 import net.fabricmc.example.item.GunItem;
+import net.fabricmc.example.item.Test01;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -34,7 +35,7 @@ public abstract class LivingEntitySwingHandMixin {
     public void swingHandInject(Hand hand, CallbackInfo ci)
     {
         LivingEntity entity = ((LivingEntity)(Object)this);
-        if(entity.getMainHandStack().getItem() instanceof GunItem)
+        if(entity.getMainHandStack().getItem() instanceof GunItem || entity.getMainHandStack().getItem() instanceof Test01)
         {
             ci.cancel();
         }

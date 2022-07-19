@@ -1,7 +1,9 @@
 package net.fabricmc.example.entity.basic;
 
+import net.fabricmc.example.entity.bullet_hole.BulletHoleEntity;
 import net.fabricmc.example.item.GunItem;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.ProjectileDamageSource;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -9,9 +11,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class BulletEntity extends PersistentProjectileEntity {
@@ -37,6 +42,19 @@ public class BulletEntity extends PersistentProjectileEntity {
     protected void onCollision(HitResult hitResult) {
         if(hitResult.getType() == HitResult.Type.BLOCK)
         {
+            BlockHitResult blockHitResult = (BlockHitResult)hitResult;
+            if(world.getBlockState(blockHitResult.getBlockPos()).isIn(TagKey.of(Registry.BLOCK_KEY, new Identifier("fbg", "bullet_destructible")))) {
+               world.breakBlock(blockHitResult.getBlockPos(), false);
+            } else
+            {
+                if (!world.isClient) {
+                    BulletHoleEntity holeEntity = new BulletHoleEntity(world, 72000);
+                    holeEntity.setPos(this.getX(), this.getY(), this.getZ());
+                    holeEntity.setVelocity(blockHitResult.getPos());
+                    holeEntity.setNoGravity(true);
+                    world.spawnEntity(holeEntity);
+                }
+            }
             this.discard();
         } else if(hitResult.getType() == HitResult.Type.ENTITY)
         {

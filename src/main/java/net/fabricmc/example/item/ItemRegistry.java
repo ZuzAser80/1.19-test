@@ -7,6 +7,7 @@ import net.fabricmc.example.ExampleMod;
 import net.fabricmc.example.armor.KevlarArmorMaterial;
 import net.fabricmc.example.armor.SpecnazArmorMaterial;
 import net.fabricmc.example.entity.explosive.GrenadeItem;
+import net.fabricmc.example.entity.explosive.GrenadeType;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.entity.EquipmentSlot;
@@ -18,6 +19,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.Registry;
 
+import java.util.List;
+
 public class ItemRegistry {
     public static GunItem USP;
     public static ArmorItem KevlarHelm;
@@ -25,6 +28,8 @@ public class ItemRegistry {
     public static ArmorItem SpecnazHelm;
     public static ArmorItem SpecnazChest;
     public static Item HeGrenade;
+    public static Item Test01;
+    public static AttachmentItem Collimator_green1_2x;
 
     public static void registry()
     {
@@ -32,14 +37,22 @@ public class ItemRegistry {
         ArmorMaterial KevlarMaterial = new KevlarArmorMaterial();
         ArmorMaterial SpecnazMaterial = new SpecnazArmorMaterial();
 
-        USP = Registry.register(Registry.ITEM, new Identifier("fbg", "usp"), new GunItem(new Item.Settings().maxCount(1), Items.STONE, 20, 7, "pistol", 20, 400));
-        Registry.register(Registry.ITEM, new Identifier("fbg", "shotgun"), new GunItem(new Item.Settings().maxCount(1), Items.IRON_INGOT, 80, 8, "shotgun", 40, 600));
+        USP = Registry.register(Registry.ITEM, new Identifier("fbg", "usp"), new GunItem(new Item.Settings().maxCount(1), Items.STONE, 20, 7, "pistol", 400, 0.25f, 5, 2.5f));
+        Registry.register(Registry.ITEM, new Identifier("fbg", "shotgun"), new GunItem(new Item.Settings().maxCount(1), Items.IRON_INGOT, 80, 8, "shotgun", 600, 0.1f, 10, 2.5f));
         //TODO: 3D KEVLAR PLASTINES MODELS?
         //Registry(s)
         //LOOK @ THE SHIELD WIKI DONT FORGOR
-        HeGrenade = Registry.register(Registry.ITEM, new Identifier("fbg", "he_grenade"), new GrenadeItem(new Item.Settings().group(ExampleMod.FbgArmorGroup).maxCount(1).rarity(Rarity.UNCOMMON), "Smoke"));
+        Test01 = Registry.register(Registry.ITEM, new Identifier("fbg", "test_01"), new Test01(new Item.Settings().maxCount(1)));
+        Registry.register(Registry.ITEM, new Identifier("fbg", "collimator_red_1.2x"), new AttachmentItem(new Item.Settings().maxCount(1), new String[]{"item.fbg.collimator_red_1.2x.tooltip", "item.fbg.collimator_red_1.2x.tooltip_1"}));
+        Collimator_green1_2x = Registry.register(Registry.ITEM, new Identifier("fbg", "collimator_green_1.2x"), new AttachmentItem(new Item.Settings().maxCount(1), new String[]{"item.fbg.collimator_green_1.2x.tooltip", "item.fbg.collimator_green_1.2x.tooltip_1"}));
+        Registry.register(Registry.ITEM, new Identifier("fbg", "silencer_0.45"), new AttachmentItem(new Item.Settings().maxCount(1), new String[]{"item.fbg.silencer_0.45.tooltip", "item.fbg.silencer_0.45.tooltip_1"}));
+
+        HeGrenade = Registry.register(Registry.ITEM, new Identifier("fbg", "he_grenade"), new GrenadeItem(new Item.Settings().group(ExampleMod.FbgArmorGroup).maxCount(1).rarity(Rarity.UNCOMMON), GrenadeType.SMOKE));
+
         Registry.register(Registry.ITEM, new Identifier("fbg", "kevlar_big_plate"), new Item(new Item.Settings().group(ExampleMod.FbgArmorGroup)));
         Registry.register(Registry.ITEM, new Identifier("fbg", "swat_shield"), new BulletProofShieldItem(new Item.Settings()));
+
+
         KevlarHelm = Registry.register(Registry.ITEM, new Identifier("fbg", "kevlar_helmet"), new ArmorItem(KevlarMaterial, EquipmentSlot.HEAD, new Item.Settings().group(ExampleMod.FbgArmorGroup)));
         KevlarChest = Registry.register(Registry.ITEM, new Identifier("fbg", "kevlar_chest"), new ArmorItem(KevlarMaterial, EquipmentSlot.CHEST, new Item.Settings().group(ExampleMod.FbgArmorGroup)));
         SpecnazHelm = Registry.register(Registry.ITEM, new Identifier("fbg", "specnaz_helmet"), new ArmorItem(SpecnazMaterial, EquipmentSlot.HEAD, new Item.Settings().group(ExampleMod.FbgArmorGroup)));

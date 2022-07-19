@@ -10,8 +10,10 @@
     "client.HandRenderer",
     "client.BipedEntityModelMixin",
     "client.LivingEntitySwingHandMixin",
-    "client.BuiltinModelMixin",
-    "client.GameHudMixinThing"
+    "client.HeldItemFeatureRendererMixin",
+    "client.GameHudMixinThing",
+    "client.BuiltinModelItemRendererMixin",
+    "client.KeyBindingAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

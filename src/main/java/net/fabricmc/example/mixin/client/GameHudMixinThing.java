@@ -3,6 +3,8 @@ package net.fabricmc.example.mixin.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.example.item.GunItem;
+import net.fabricmc.example.item.Test01;
+import net.fabricmc.example.networking.KeybindRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -29,13 +31,13 @@ public abstract class GameHudMixinThing {
     @Inject(at = @At("TAIL"), method = "render")
     public void renderAmmoOverlay(MatrixStack matrices, float tickDelta, CallbackInfo ci)
     {
+        ItemStack s = this.client.player.getMainHandStack();
+        int sW = scaledWidth;
+        int sH = scaledHeight;
+        int aB = (sW - 50) - (sW - 5);
         if(this.client.player.getMainHandStack().getItem() instanceof GunItem gun && !this.client.options.hudHidden)
         {
             //k this shit works
-            ItemStack s = this.client.player.getMainHandStack();
-            int sW = scaledWidth;
-            int sH = scaledHeight;
-            int aB = (sW - 50) - (sW - 5);
             if(s.getNbt()!=null) {
                 DrawableHelper.fill(matrices, sW - 50, sH - 45, sW - 7, sH - 5, new Color(0, 0, 0, 150).getRGB());
                 if (s.getNbt().getInt("magCount") > 0) {
@@ -43,6 +45,10 @@ public abstract class GameHudMixinThing {
                 }
                 this.client.textRenderer.draw(matrices, s.getNbt().getInt("magCount") + " / " + gun.getTC(), sW - 45, sH - 30, new Color(255, 255, 255).getRGB());
             }
+        } else if (this.client.player.getMainHandStack().getItem() instanceof Test01 test01 && !this.client.options.hudHidden && test01.inAttachmentMode)
+        {
+            this.client.textRenderer.draw(matrices, "Press [" + ((KeyBindingAccessor)KeybindRegistry.attachmentMode).getBoundKey().getLocalizedText().getString() + "] to exit attachment selection mode", 10, 10, new Color(255, 255, 255).getRGB());
+            this.client.textRenderer.draw(matrices, "Press [" + ((KeyBindingAccessor)KeybindRegistry.scopeKey).getBoundKey().getLocalizedText().getString() + "] to change scope", sW / 2, 30, new Color(255, 255, 255).getRGB());
         }
     }
 }

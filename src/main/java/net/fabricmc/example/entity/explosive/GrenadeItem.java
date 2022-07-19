@@ -19,8 +19,8 @@ import net.minecraft.world.World;
 
 public class GrenadeItem extends Item {
 
-    public String type;
-    public GrenadeItem(Settings settings, String type) {
+    public GrenadeType type;
+    public GrenadeItem(Settings settings, GrenadeType type) {
         super(settings);
         this.type = type;
     }
@@ -45,22 +45,14 @@ public class GrenadeItem extends Item {
             boolean spawned = false;
 		/*
 		user.getItemCooldownManager().set(this, 5);
-		Optionally, you can add a cooldown to your item's right-click use, similar to Ender Pearls.
+		Optionally, you can add a cooldown to your items's right-click use, similar to Ender Pearls.
 		*/
             if (!world.isClient) {
-                GrenadeEntity snowballEntity = switch (type) {
-                    case "Smoke" -> new GrenadeEntity(world, this, 0, 0, false, true, false);
-                    case "Explosive" -> new GrenadeEntity(world, this, 10, 5, true, false, false);
-                    case "Fire" -> new GrenadeEntity(world, this, 10, 0, false, false, true);
-                    case "Flash" -> new GrenadeEntity(world, this, 10, 0, false, false, false);
-                    default -> null;
-                };
-                if(snowballEntity != null) {
-                    snowballEntity.setPos(player.getX(), player.getY() + 0.5, player.getZ());
-                    snowballEntity.setVelocity(player, player.getPitch(), player.getYaw(), 0.0F, 1.5F, 0F);
-                    world.spawnEntity(snowballEntity); // spawns entity
-                    spawned = true;
-                }
+                GrenadeEntity snowballEntity = new GrenadeEntity(world, this, this.type);
+                snowballEntity.setPos(player.getX(), player.getY() + 0.5, player.getZ());
+                snowballEntity.setVelocity(player, player.getPitch(), player.getYaw(), 0.0F, 1.5F, 0F);
+                world.spawnEntity(snowballEntity); // spawns entity
+                spawned = true;
             }
 
             player.incrementStat(Stats.USED.getOrCreateStat(this));
@@ -70,3 +62,4 @@ public class GrenadeItem extends Item {
         }
     }
 }
+

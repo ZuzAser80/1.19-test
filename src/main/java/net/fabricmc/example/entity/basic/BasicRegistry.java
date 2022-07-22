@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -22,7 +23,7 @@ public class BasicRegistry {
     public static void registry()
     {
         PistolBullet = registerEntityType(new Identifier("fbg", "pistol_bullet"), FabricEntityTypeBuilder.<BulletEntity>create(SpawnGroup.MISC,
-                (entity, world) -> new BulletEntity(world, ItemRegistry.USP))
+                (entity, world) -> new BulletEntity(world, ItemRegistry.USP, null))
                 .dimensions(EntityDimensions.fixed(0.25F, 0.25F)).build());
     }
     @Environment(EnvType.CLIENT)

@@ -1,10 +1,13 @@
 package net.fabricmc.example.entity.explosive;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -15,17 +18,23 @@ public class GrenadeEntity extends PersistentProjectileEntity {
 
     ItemStack grenadeStack;
     GrenadeType type;
+    int ageInTicks;
 
-    public GrenadeEntity(World world, Item item, GrenadeType type)
+    public GrenadeEntity(World world, Item item, GrenadeType type, int ageToDissolve)
     {
         super(GrenadeRegistry.GrenadeType, world);
         grenadeStack = new ItemStack(item);
         this.type = type;
+        ageInTicks = ageToDissolve;
     }
 
     public void tick()
     {
         super.tick();
+        if(ageInTicks > 0)
+        {
+            ageInTicks--;
+        }
         this.setRotation(this.getYaw() + random.nextFloat(), this.getPitch() + random.nextFloat());
         if (world instanceof ServerWorld) {
             ((ServerWorld)world).spawnParticles(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), 1, 0, 0, 0, 0.0D);
@@ -34,7 +43,10 @@ public class GrenadeEntity extends PersistentProjectileEntity {
     protected void onCollision(HitResult hitResult) {
         Vec3d pos = hitResult.getPos();
         BlockPos blockPos = new BlockPos(pos);
-        if(!world.isClient()) {
+        if(hitResult.getType() == HitResult.Type.BLOCK && world.getBlockState(blockPos).getBlock() != Blocks.AIR && world.getBlockState(blockPos).getBlock() != Blocks.WATER && world.getBlockState(blockPos).getBlock() != Blocks.LAVA) {
+            this.setVelocity(-this.getVelocity().getX() * 0.8, -this.getVelocity().getY() * 0.75, -this.getVelocity().getZ() * 0.8);
+        }
+        if(!world.isClient() && ageInTicks > 0) {
             switch (type) {
                 case SMOKE -> {
                     summonSmoke(blockPos);

@@ -2,11 +2,12 @@ package net.fabricmc.example;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.example.entity.basic.BasicRegistry;
-import net.fabricmc.example.entity.bullet_hole.BulletHoleRegistry;
-import net.fabricmc.example.entity.bullet_hole.BulletHoleRenderer;
+import net.fabricmc.example.entity.bulletHole.BulletHoleRegistry;
 import net.fabricmc.example.entity.explosive.GrenadeRegistry;
 import net.fabricmc.example.item.ItemRegistry;
+import net.fabricmc.example.networking.ModifyInventory;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -33,5 +34,10 @@ public class ExampleMod implements ModInitializer {
 		BasicRegistry.registry();
 		GrenadeRegistry.registry();
 		BulletHoleRegistry.registry();
+
+		ServerPlayNetworking.registerGlobalReceiver(new Identifier("fbg", "inventory_server_packet"), ModifyInventory::onAttachmentModePacket);
+		ServerPlayNetworking.registerGlobalReceiver(new Identifier("fbg", "scope_server_packet"), ModifyInventory::onScopePacket);
+		ServerPlayNetworking.registerGlobalReceiver(new Identifier("fbg", "barrel_server_packet"), ModifyInventory::onBarrelPacket);
+
 	}
 }

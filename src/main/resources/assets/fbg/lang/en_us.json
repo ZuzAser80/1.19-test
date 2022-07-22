@@ -5,6 +5,6 @@
   "item.fbg.he_grenade": "HE Grenade",
   "key.fbg.attachment_mode": "Attachment selection mode",
   "item.fbg.collimator_red_1.2x.tooltip": "g",
-  "item.fbg.collimator_red_1.2x": "Red Collimator Scope (1.2x)"
-
+  "item.fbg.collimator_red_1.2x": "Red Collimator Scope (1.2x)",
+  "item.fbg.muzzle_brake_0.45.tooltip": "Decreases knockback from shooting by 10%"
 }

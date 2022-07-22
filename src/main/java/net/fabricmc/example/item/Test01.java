@@ -10,19 +10,8 @@ import net.minecraft.world.World;
 
 public class Test01 extends Item {
     public boolean inAttachmentMode;
-    public String attachmentModeIndex;
-    public int animationLength;
+    public AttachmentModeIndex attachmentModeIndex = AttachmentModeIndex.OTHER;
     public Test01(Settings settings) {
         super(settings);
-    }
-    public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        if(selected && MinecraftClient.getInstance().mouse.wasRightButtonClicked())
-        {
-            stack.getOrCreateNbt().putString("barrel", "silencer");
-        }
-    }
-    public int getAnimationLength()
-    {
-        return this.animationLength;
     }
 }

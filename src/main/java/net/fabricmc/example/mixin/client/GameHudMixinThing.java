@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.example.item.GunItem;
 import net.fabricmc.example.item.Test01;
-import net.fabricmc.example.networking.KeybindRegistry;
+import net.fabricmc.example.networking.ModifyInventory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -37,18 +37,19 @@ public abstract class GameHudMixinThing {
         int aB = (sW - 50) - (sW - 5);
         if(this.client.player.getMainHandStack().getItem() instanceof GunItem gun && !this.client.options.hudHidden)
         {
-            //k this shit works
-            if(s.getNbt()!=null) {
+            if(s.getNbt() != null) {
                 DrawableHelper.fill(matrices, sW - 50, sH - 45, sW - 7, sH - 5, new Color(0, 0, 0, 150).getRGB());
                 if (s.getNbt().getInt("magCount") > 0) {
                     DrawableHelper.fill(matrices, sW - 50, sH - 50, (sW - 50) - ((aB / gun.magCap) * s.getNbt().getInt("magCount")), sH - 45, new Color(0, 255, 0, 150).getRGB());
                 }
                 this.client.textRenderer.draw(matrices, s.getNbt().getInt("magCount") + " / " + gun.getTC(), sW - 45, sH - 30, new Color(255, 255, 255).getRGB());
             }
-        } else if (this.client.player.getMainHandStack().getItem() instanceof Test01 test01 && !this.client.options.hudHidden && test01.inAttachmentMode)
-        {
-            this.client.textRenderer.draw(matrices, "Press [" + ((KeyBindingAccessor)KeybindRegistry.attachmentMode).getBoundKey().getLocalizedText().getString() + "] to exit attachment selection mode", 10, 10, new Color(255, 255, 255).getRGB());
-            this.client.textRenderer.draw(matrices, "Press [" + ((KeyBindingAccessor)KeybindRegistry.scopeKey).getBoundKey().getLocalizedText().getString() + "] to change scope", sW / 2, 30, new Color(255, 255, 255).getRGB());
+            if(gun.inAttachmentMode && !this.client.options.hudHidden)
+            {
+                this.client.textRenderer.draw(matrices, "Press [" + ((KeyBindingAccessor) ModifyInventory.attachmentMode).getBoundKey().getLocalizedText().getString() + "] to exit attachment selection mode", 10, 10, new Color(255, 255, 255).getRGB());
+                this.client.textRenderer.draw(matrices, "Press [" + ((KeyBindingAccessor)ModifyInventory.scopeKey).getBoundKey().getLocalizedText().getString() + "] to change scope", sW / 2, 50, new Color(255, 255, 255).getRGB());
+                this.client.textRenderer.draw(matrices, "Press [" + ((KeyBindingAccessor)ModifyInventory.barrelKey).getBoundKey().getLocalizedText().getString() + "] to change barrel", 50, sH / 2, new Color(255, 255, 255).getRGB());
+            }
         }
     }
 }

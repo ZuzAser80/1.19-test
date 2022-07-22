@@ -1,6 +1,7 @@
 {
   "replace": "false",
   "values": [
-    "fbg:silencer_0.45"
+    "fbg:silencer_0.45",
+    "fbg:muzzle_brake_0.45"
   ]
 }

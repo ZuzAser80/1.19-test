@@ -48,8 +48,8 @@ public class GrenadeItem extends Item {
 		Optionally, you can add a cooldown to your items's right-click use, similar to Ender Pearls.
 		*/
             if (!world.isClient) {
-                GrenadeEntity snowballEntity = new GrenadeEntity(world, this, this.type);
-                snowballEntity.setPos(player.getX(), player.getY() + 0.5, player.getZ());
+                GrenadeEntity snowballEntity = new GrenadeEntity(world, this, this.type, 2000);
+                snowballEntity.setPos(player.getX(), player.getY(), player.getZ());
                 snowballEntity.setVelocity(player, player.getPitch(), player.getYaw(), 0.0F, 1.5F, 0F);
                 world.spawnEntity(snowballEntity); // spawns entity
                 spawned = true;

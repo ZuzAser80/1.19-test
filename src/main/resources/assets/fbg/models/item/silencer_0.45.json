@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench By ZZ",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "fbg:item/test_01_silencer"
+		"0": "fbg:item/blank"
 	},
 	"elements": [
 		{

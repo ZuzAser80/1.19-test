@@ -2,11 +2,11 @@ package net.fabricmc.example.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.example.AnimationHelper;
+import net.fabricmc.example.item.GunItem;
 import net.fabricmc.example.item.ItemRegistry;
 import net.fabricmc.example.item.model.*;
+import net.fabricmc.example.item.model.general.AbstractBarrelModel;
 import net.fabricmc.example.item.model.general.AttachmentModel;
-import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -39,6 +39,7 @@ public class BuiltinModelItemRendererMixin {
     protected TestSilencerEntityModel testSilencerEntityModel;
     protected DefaultMuzzleFlashEntityModel muzzleFlashEntityModel;
     protected CollimatorGreen1_2xEntity collimatorGreen1_2xEntity;
+    protected MuzzleBrake0_45EntityModel muzzleBrake0_45model;
 
     @Inject(at = @At("HEAD"), method = "reload")
     public void reloadInject(ResourceManager manager, CallbackInfo ci)
@@ -48,6 +49,7 @@ public class BuiltinModelItemRendererMixin {
         testSilencerEntityModel = new TestSilencerEntityModel(this.entityModelLoader.getModelPart(TestSilencerEntityModel.layer));
         muzzleFlashEntityModel = new DefaultMuzzleFlashEntityModel(this.entityModelLoader.getModelPart(DefaultMuzzleFlashEntityModel.layer));
         collimatorGreen1_2xEntity = new CollimatorGreen1_2xEntity(this.entityModelLoader.getModelPart(CollimatorGreen1_2xEntity.layer));
+        muzzleBrake0_45model = new MuzzleBrake0_45EntityModel(this.entityModelLoader.getModelPart(MuzzleBrake0_45EntityModel.layer));
     }
 
     @Inject(at = @At("HEAD"), method = "render")
@@ -57,9 +59,8 @@ public class BuiltinModelItemRendererMixin {
         {
             VertexConsumer vertexConsumer = ItemRenderer.getDirectItemGlintConsumer(vertexConsumers, this.collimatorGreen1_2xEntity.getLayer( new Identifier("fbg", "textures/entity/collimator_green_1.2x.png")), false, false);
             collimatorGreen1_2xEntity.render(matrices, vertexConsumer, light, overlay, 1, 1, 1, 1);
-
         }
-        if(stack.isOf(ItemRegistry.Test01))
+        if(stack.getItem() instanceof GunItem)
         {
             matrices.multiply(new Quaternion(Vec3f.POSITIVE_Y.getDegreesQuaternion(180)));
             matrices.multiply(new Quaternion(Vec3f.POSITIVE_X.getDegreesQuaternion(180)));
@@ -83,21 +84,20 @@ public class BuiltinModelItemRendererMixin {
                 } else
                 {
                     //do diff models per att type
-                    AttachmentModel scopeModel = getBarrelModel(stack.getOrCreateNbt().getString("barrel"));
-                    muzzleFlashEntityModel.getMain().setPivot(testSilencerEntityModel.getMuzzlePivot().pivotX, testSilencerEntityModel.getMuzzlePivot().pivotY, testSilencerEntityModel.getMuzzlePivot().pivotZ);
+                    AbstractBarrelModel barrelModel = getBarrelModel(stack.getOrCreateNbt().getString("barrel"));
+                    muzzleFlashEntityModel.getMain().setPivot(barrelModel.getMuzzlePivot().pivotX, barrelModel.getMuzzlePivot().pivotY, barrelModel.getMuzzlePivot().pivotZ);
                 }
                 muzzleFlashEntityModel.render(matrices, vertexConsumer2, light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
             }
         }
     }
-    public AttachmentModel getBarrelModel(String key)
+    public AbstractBarrelModel getBarrelModel(String key)
     {
-        AttachmentModel model;
+        AbstractBarrelModel model;
         switch (key) {
-            case "item.fbg.collimator_red_1.2x" -> model = testSilencerEntityModel;
-            case "item.fbg.collimator_green_1.2x" -> {
-                System.out.println("green");
-                model = collimatorGreen1_2xEntity;
+            case "item.fbg.silencer_0.45" -> model = testSilencerEntityModel;
+            case "item.fbg.muzzle_brake_0.45" -> {
+                model = muzzleBrake0_45model;
             }
             default -> model = null;
         }
@@ -117,7 +117,6 @@ public class BuiltinModelItemRendererMixin {
                 texture = new Identifier("fbg", "textures/entity/collimator_green_1.2x.png");
             }
             default -> {
-                //System.out.println("default");
                 modelToRender = null;
                 texture = null;
             }
@@ -135,6 +134,10 @@ public class BuiltinModelItemRendererMixin {
         switch (stack.getOrCreateNbt().getString("barrel")) {
             case "item.fbg.silencer_0.45" -> {
                 modelToRender = testSilencerEntityModel;
+                texture = new Identifier("fbg", "textures/entity/test_01_silencer.png");
+            }
+            case "item.fbg.muzzle_brake_0.45" -> {
+                modelToRender = muzzleBrake0_45model;
                 texture = new Identifier("fbg", "textures/entity/test_01_silencer.png");
             }
             default -> {

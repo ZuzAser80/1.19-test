@@ -1,4 +1,4 @@
-package net.fabricmc.example.entity.bullet_hole;
+package net.fabricmc.example.entity.bulletHole;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -6,10 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class BulletHoleEntity extends PersistentProjectileEntity {
-    public int ageD;
-    public BulletHoleEntity(World world, int ageInTicks) {
-        super(BulletHoleRegistry.HoleType, world);
-        ageD = ageInTicks;
+
+    public BulletHoleEntity(EntityType<? extends PersistentProjectileEntity> entityType, World world) {
+        super(entityType, world);
     }
 
     @Override

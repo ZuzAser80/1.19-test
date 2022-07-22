@@ -28,7 +28,7 @@ public class GrenadeRegistry {
     public static void registry()
     {
         GrenadeType = registerEntityType(new Identifier("fbg", "grenade"), FabricEntityTypeBuilder.<GrenadeEntity>create(SpawnGroup.MISC,
-                (entity, world) -> new GrenadeEntity(world, Items.DIAMOND, net.fabricmc.example.entity.explosive.GrenadeType.SMOKE))
+                (entity, world) -> new GrenadeEntity(world, Items.DIAMOND, net.fabricmc.example.entity.explosive.GrenadeType.SMOKE, 200))
                 .dimensions(EntityDimensions.fixed(0.25F, 0.25F)).build());
     }
     @Environment(EnvType.CLIENT)

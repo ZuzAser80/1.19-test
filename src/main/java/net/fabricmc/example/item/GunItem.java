@@ -8,10 +8,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.world.World;
 
 import java.util.Random;
-
 
 public class GunItem extends Item {
     public int magCap;
@@ -21,24 +22,23 @@ public class GunItem extends Item {
     Item bul;
     int reloadCooldown;
     PlayerEntity pl;
-    float offsetPerTick;
-    int animationLength;
-    float rotationOffsetPerTick;
     boolean shoot;
     boolean reload;
-    boolean inAttachmentMode;
+    public boolean inAttachmentMode;
+    boolean spawnMultipleBulletsPerShot;
+    public DefaultParticleType particle;
+    public AttachmentModeIndex attachmentModeIndex = AttachmentModeIndex.OTHER;
 
     //TODO: Rethink the models and shit
-    public GunItem(Settings settings, Item bulletItem, int dmg, int magCap, String gunType, int c2, float offsetPerTick, int animationLength, float rotationOffsetPerTick) {
+    public GunItem(Settings settings, Item bulletItem, int dmg, int magCap, String gunType, boolean spawnMultipleBulletsPerShot, DefaultParticleType particleType) {
         super(settings);
         bul = bulletItem;
         this.dmg = dmg;
         type = gunType;
+        particle = particleType;
         this.magCap = magCap;
-        reloadCooldown = c2;
-        this.offsetPerTick = offsetPerTick;
-        this.animationLength = animationLength;
-        this.rotationOffsetPerTick = rotationOffsetPerTick;
+        reloadCooldown = 200;
+        this.spawnMultipleBulletsPerShot = spawnMultipleBulletsPerShot;
     }
 
     public Item getBulletItem() {
@@ -62,7 +62,7 @@ public class GunItem extends Item {
                 }
                 stack.getOrCreateNbt().putInt("magCount", magCount);
                 if (magCount > 0) {
-                    if ("shotgun".equals(type)) {
+                    if (spawnMultipleBulletsPerShot) {
                         Random rnd = new Random();
                         int n = rnd.nextInt(3, 6);
                         for (int r = 0; r <= n; r++) {
@@ -75,14 +75,14 @@ public class GunItem extends Item {
                             if (r1 == 1) {
                                 r1 = -r1;
                             }
-                            BulletEntity sGBE = new BulletEntity(world, this);
+                            BulletEntity sGBE = new BulletEntity(world, this, pl);
                             sGBE.setPos(pl.getX(), pl.getY() + 0.75, pl.getZ());
                             sGBE.setVelocity(pl, pl.getPitch() + r1, pl.getYaw() + r2, 0.0F, 3.0F, 1.0F);
                             sGBE.setNoGravity(true);
                             world.spawnEntity(sGBE);
                         }
                     } else {
-                        BulletEntity dBE = new BulletEntity(world, this);
+                        BulletEntity dBE = new BulletEntity(world, this, pl);
                         dBE.setPos(pl.getX(), pl.getY() + 0.75, pl.getZ());
                         dBE.setVelocity(pl, pl.getPitch(), pl.getYaw(), 0.0F, 3.0F, 1.0F);
                         dBE.setNoGravity(true);
@@ -96,12 +96,6 @@ public class GunItem extends Item {
                 }
                 shoot = false;
             }
-        } else if (selected && MinecraftClient.getInstance().mouse.wasRightButtonClicked())
-        {
-            stack.getOrCreateNbt().putString("scope", "collimator_red");
-            stack.getOrCreateNbt().putString("barrel", "silencer");
-            /*stack.getOrCreateNbt().putString("underBarrel", "laser");*/
-            //Do the aiming functional i think
         }
         if (i.contains(this.bul.getDefaultStack())) {
             ItemStack bulletStack = i.getStack(i.getSlotWithStack(this.bul.getDefaultStack()));
@@ -118,11 +112,6 @@ public class GunItem extends Item {
     public void reload()
     {
         reload = true;
-    }
-
-    public PlayerEntity getPlayer()
-    {
-        return this.pl;
     }
 
     public int getTC() {

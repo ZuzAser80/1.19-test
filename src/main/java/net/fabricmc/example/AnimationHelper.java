@@ -19,8 +19,6 @@ public class AnimationHelper {
     private int ticks;
     private final float offsetPerTick;
     private float offset;
-    private int pauseTicks;
-    private boolean isOnPause;
 
     private AnimationHelper(int animationTicks, float offset, float offPerT) {
         this.isPlaying = true;
@@ -36,18 +34,6 @@ public class AnimationHelper {
         return animation;
     }
 
-    public boolean getOnPause()
-    {
-        return this.isOnPause;
-    }
-
-    public void setPauseTicks(int ticks)
-    {
-        this.pauseTicks = ticks;
-        this.isOnPause = true;
-        this.isPlaying = false;
-    }
-
     @Environment(EnvType.CLIENT)
     public static void eventClient()
     {
@@ -55,13 +41,6 @@ public class AnimationHelper {
         {
             Set<AnimationHelper> toRemove = new HashSet<>();
             animations.forEach((animation) -> {
-                if(animation.isOnPause)
-                {
-                    if(animation.isPlaying) {
-                        animation.isPlaying = false;
-                    }
-                    animation.pauseTicks--;
-                }
                 if(!animation.isPlaying && animation.ticks != 0)
                 {
                     animation.ticks = 0;
@@ -95,7 +74,7 @@ public class AnimationHelper {
         return new Quaternion(Vec3f.POSITIVE_Z.getDegreesQuaternion(offset));
     }
 
-    public void doTransform(MatrixStack matrices) {
-        matrices.translate(0,0, offset);
+    public void doTransform(MatrixStack matrices, float offsetX, float offsetY, float offsetZ) {
+        matrices.translate(offsetX, offsetY, offsetZ);
     }
 }
